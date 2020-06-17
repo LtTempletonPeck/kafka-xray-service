@@ -1,0 +1,20 @@
+= Kafka X-Ray Service
+
+[quote,https://gitter.im/spring-cloud/spring-cloud-sleuth?at=5ee9def590cd6426c8111067]
+____
+I have a Spring Boot project that uses the Spring Cloud Streams Kafka binder.
+I am trying to get tracing data out using the Brave `KafkaTracing` and have turned off `spring.sleuth.integration.enabled`.
+Sleuth uses AOP in the `SleuthKafkaAspect` to wrap the Kafka producer/consumer/listener creation but this never runs.
+I think the Spring Boot `KafkaAutoConfiguration` is running before the Sleuth `TraceMessagingAutoConfiguration` and the aspect pointcuts miss the creates.
+____
+
+I am wrong about the order `KafkaAutoConfiguration` does seem to come first but the AOP around Kafka producer/consumer/listener creation does not seem to be working with
+Spring Cloud Stream.
+
+== Running
+
+NOTE: To start the application you need to be running Kafka locally
+
+`docker run --name kafka-lens --rm --net=host lensesio/fast-data-dev`
+
+To push a message use kafkacat `echo '{"id1": "123", "id2": "ABC" }' | kafkacat -P -b localhost -t topic-in`
